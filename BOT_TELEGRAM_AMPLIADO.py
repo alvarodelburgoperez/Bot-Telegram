@@ -1,8 +1,17 @@
-from telegram import Update
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
+from telegram import Update, Bot
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, Dispatcher
 import random
 import requests
 from datetime import datetime
+from flask import Flask, request
+
+app = Flask(__name__)
+
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    update = Update.de_json(request.get_json(force=True), bot)
+    dp.process_update(update)
+    return 'OK'
 
 
 # TOKEN DE LA API
@@ -379,3 +388,13 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
+    TOKEN = '6916160737:AAEym5bUZb6CqG3KBfV9Xbc9irplSBc3MKo'
+    PORT = 8443
+    URL = 'https://alvarodelburgoperez.com:8443/webhook'
+
+    bot = Bot(TOKEN)
+    bot.setWebhook(URL)
+
+    dp = Dispatcher(bot, None)
+
+    app.run(port=PORT, debug=True)
