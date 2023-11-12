@@ -3,7 +3,7 @@ Bot de telegram que a través de una serie de comandos propirciona diferente inf
 
 Comandos:
 
-/startbot - Inicia el Bot
+/startbot - Inicia el Bot\n
 /saludo - Manda un saludo al chat
 /mensaje - Manda un mensaje al chat
 /ultima_carrera - Muestra información  de la última carrera
