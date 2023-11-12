@@ -1,17 +1,8 @@
-from telegram import Update, Bot
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, Dispatcher
+from telegram import Update
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 import random
 import requests
 from datetime import datetime
-from flask import Flask, request
-
-app = Flask(__name__)
-
-@app.route('/webhook', methods=['POST'])
-def webhook():
-    update = Update.de_json(request.get_json(force=True), bot)
-    dp.process_update(update)
-    return 'OK'
 
 
 # TOKEN DE LA API
@@ -148,7 +139,7 @@ def ultima_carrera(update: Update, context: CallbackContext) -> None:
                 # OBTIENE LA POSICIÓN FINAL DE CARRERA
                 posicion_final = obtener_posicion(carrera_actual, 'alonso')
 
-                mensaje_respuesta = f"Última carrera disputada de Fernando Alonso:\n\nNombre: {nombre_carrera}\nCircuito: {circuito}\nFecha: {fecha_carrera}\nPosición de Parrilla: {parrilla}\nPosición Final: {posicion_final}"
+                mensaje_respuesta = f"Mi última carrera durante el {nombre_carrera} en el circuito '{circuito}' el día {fecha_carrera}.\n\nSalí en {parrilla} posición y acabé {posicion_final}º"
 
                 update.message.reply_text(mensaje_respuesta)
             else:
@@ -184,7 +175,7 @@ def proximas_carreras(update: Update, context: CallbackContext) -> None:
     
 
             if proximas_carreras:
-                mensaje_respuesta = "Próximas carreras de Fernando Alonso:\n\n"
+                mensaje_respuesta = "Mis próximas carreras son:\n\n"
                 for carrera in proximas_carreras:
 
                     round = carrera['round']
@@ -247,7 +238,7 @@ def clasificacion(update: Update, context: CallbackContext)-> None:
                 victorias = clasificacion_alonso.get('wins', 'No disponible')
 
 
-                update.message.reply_text(f"Fernando Alonso ocupa actualmente la {posicion}ª posición en la clasificación de pilotos con {puntos} puntos y {victorias} victorias.")
+                update.message.reply_text(f"Ocupo actualmente la {posicion}ª posición en la clasificación de pilotos con {puntos} puntos y {victorias} victorias.")
             else:
                 update.message.reply_text("La información de la posición de Fernando Alonso no está disponible en este momento.")
 
@@ -287,7 +278,7 @@ def obtener_cita_fernando_alonso(update: Update, context: CallbackContext):
         cita_seleccionada = random.choice(citas_fernando_alonso)
 
         # ENVÍA LA CITA AL USUARIO
-        update.message.reply_text(f"Cita de Fernando Alonso:\n{cita_seleccionada}")
+        update.message.reply_text(f"Alguna de mis frases son:\n'{cita_seleccionada}'")
 
     else:
         update.message.reply_text('Por favor, debes iniciar primero el bot con /startbot.')
@@ -300,9 +291,13 @@ def carrera_en_vivo(update: Update, context: CallbackContext) -> None:
 
     if bot_iniciado:
 
+        movistar= "https://ver.movistarplus.es"
+        DAZN = "https://www.dazn.com"
+        F1TV = "https://f1tv.formula1.com/"
+
         # MENSAJE CON LOS ENLACES
-        mensaje_respuesta = f"Enlaces para seguir la próxima carrera de Fórmula 1:\n\n"
-        mensaje_respuesta += f"Television: \n\n Movistar: https://ver.movistarplus.es \n DAZN: https://www.dazn.com \n F1TV: https://f1tv.formula1.com/"
+        mensaje_respuesta = f"Aquí te dejo los enlaces para seguir la próxima carrera de Fórmula 1:\n\n"
+        mensaje_respuesta += f"Television: \n\n Movistar: {movistar} \n DAZN: {DAZN} \n F1TV: {F1TV}"
 
         update.message.reply_text(mensaje_respuesta)
 
@@ -388,13 +383,3 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-    TOKEN = '6916160737:AAEym5bUZb6CqG3KBfV9Xbc9irplSBc3MKo'
-    PORT = 8443
-    URL = 'https://alvarodelburgoperez.com:8443/webhook'
-
-    bot = Bot(TOKEN)
-    bot.setWebhook(URL)
-
-    dp = Dispatcher(bot, None)
-
-    app.run(port=PORT, debug=True)
